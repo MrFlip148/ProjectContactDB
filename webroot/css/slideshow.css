@@ -1,0 +1,13 @@
+/**
+* Style for JavaScript slideshow
+*
+*/
+#slideshow {
+	position : relative;
+	left : 15px;
+}
+
+.slideshow {
+	width : 950px;
+	height : 180px;
+}
