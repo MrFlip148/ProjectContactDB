@@ -1,0 +1,22 @@
+.navbar{
+	display : block;
+	background-color : #4C73A8;
+	font-family : Verdana;
+	padding : 0.7em;
+	margin-bottom : 10px;
+	}
+.navbar a{
+	background-color : #669AE1;
+	color : #fff;
+	padding : 0.3em 0.2em 0.7em 0.2em;
+	text-decoration : none;
+	}
+.navbar a:hover{
+	background-color : #62C2E4;
+	padding : 0.5em 0.2em 0.7em 0.2em;
+	}
+.navbar a.selected{
+	background-color : #fff;
+	padding : 0.5em 0.2em 0.7em 0.2em;
+	color : #333;
+	}

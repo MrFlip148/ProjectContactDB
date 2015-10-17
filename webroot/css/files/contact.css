@@ -1,0 +1,21 @@
+div#contactNfo {
+	width : 340px;
+	float : left;
+}
+
+div#errandNfo {
+	width : 620px;
+	float : right;
+	
+}
+#errandTable {
+	border : 1px solid black;
+}
+
+table {
+	max-width : 95%;
+	min-width : 50%;
+}
+input#text {
+	width : 25em;
+}

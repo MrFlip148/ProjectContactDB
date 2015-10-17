@@ -47,12 +47,10 @@ $conDB = array();
  *
  */
 
-
-$conDB['database']['dsn']            = 'mysql:host=mysql16.citynetwork.se;dbname=133425-kontaktdatabas;';
-$conDB['database']['username']       = '133425-pi96085';
-$conDB['database']['password']       = '123123123'; 
+$conDB['database']['dsn']            = 'mysql:host=;dbname=';
+$conDB['database']['username']       = '';
+$conDB['database']['password']       = ''; 
 $conDB['database']['driver_options'] = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'"); 
-
 
 $db = new CDatabase($conDB['database']);
 
@@ -73,17 +71,6 @@ EOD;
 $conDB['footer'] = <<<EOD
 <footer>
 	<span class='sitefooter'>
-EOD;
-/*remove from here
-	Copyright (c) Philip Andersson (mr.pilip@gmail.com) | 
-	Verktyg:
-	<a href="http://validator.w3.org/check/referer">HTML5</a>
-	<a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
-	<a href="http://jigsaw.w3.org/css-validator/check/referer?profile=css3">CSS3</a>
-	<a href="http://validator.w3.org/unicorn/check?ucn_uri=referer&amp;ucn_task=conformance">Unicorn</a>
-	<a href="source.php">Källkod</a>
-*/
-$conDB['footer'] .= <<<EOD
 	</span>
 </footer>
 EOD;
@@ -91,7 +78,7 @@ EOD;
 /**
  * Create user handler
  */
-$user = new CUser();
+$user = new CUser($db);
 
 /**
  * Create Contact handler
@@ -101,7 +88,7 @@ $contact = new CContact($db);
 /**
  * Create Contact handler
  */
-$app = new CAppointment($db);
+$errand = new CErrand($db);
 
 /**
  * Theme related settings.
@@ -119,14 +106,15 @@ $conDB['navbar'] = array('class' => 'nb-plain', 'items' => array(), 'callback_se
 
 if($user->isAuthentic())
 {
-	$conDB['navbar']['items']['hem'] = array('text' => $user->getUserAcronym(), 'url' => 'index.php' , 'title' => '');
-	$conDB['navbar']['items']['contacts'] = array('text' => 'Kontakter', 'url' => 'contacts.php' , 'title' => 'Kontakter');
-	$conDB['navbar']['items']['appointments'] = array('text' => 'Ärenden', 'url' => 'appointments.php' , 'title' => 'Ärenden');
-	if($user->getUserAcronym() == 'admin')
+	$conDB['navbar']['items']['hem'] = array('text' => 'Hem','url' => 'index.php','title' => '');
+	$conDB['navbar']['items']['contacts'] = array('text' => 'Alla Kontakter','url' => 'contacts_all.php','title' => '');
+	$conDB['navbar']['items']['errands'] = array('text' => 'Alla Ärenden','url' => 'errands_all.php','title' => '');
+	if($user->getUser()->acronym == 'admin')
 	{
-		$conDB['navbar']['items']['userList'] = array('text' => 'Användar Lista', 'url' => 'userList.php', 'title' => 'Användar Lista');
+		$conDB['navbar']['items']['user_list'] = array('text' => 'Användare', 'url' => 'user_list.php', 'title' => 'Användare');
 	}
-	$conDB['navbar']['items']['login'] = array('text' => 'Logout', 'url' => 'logout.php', 'title' => 'Logga Ut');
+	$conDB['navbar']['items']['user'] = array('text' => 'Mitt Konto','url' => 'user_view.php','title' => '{$user->getUser()->first_name}');
+	$conDB['navbar']['items']['logout'] = array('text' => 'Logout', 'url' => 'logout.php', 'title' => 'Logga Ut');
 }
 
 /**

@@ -4,64 +4,62 @@ ob_start();
 
 include(__DIR__.'/config.php');
 
+$output = <<<EOD
+<output style="color:red"> <- Fältet får ej vara tom</output>
+EOD;
+$output1 = null;
+$output2 = null;
+
+$res = $contact->getCompany();
+
 if(isset($_POST['acronym']) && isset($_POST['password']))
 {
-	var_dump($_POST);
-	$user->Login($conDB['database'], $_POST['acronym'], $_POST['password']);
+	if($_POST['acronym'] == "")
+	{
+		$output1 = $output;
+	}
+	if($_POST['password'] == "")
+	{
+		$output2 = $output;
+	}
+	else
+	{
+		var_dump($_POST);
+		$user->Login($_POST['acronym'], $_POST['password']);
+		header('Location: index.php');
+	}
 }
-
-$output = $user->IsLoggedIn();
 
 if($user->isAuthentic())
 {
-	$conDB['title'] = "{$user->getUserName()}";
-	$text = <<<EOD
-	<fieldset>
-		<legend>{$user->getUserAcronym()}</legend>
-		<dl>
-			<p>
-				<dt><b>Adress</b></dt>
-					<dd>{$user->getUserAdress1()}</dd>
-					<dd>{$user->getUserAdress2()}</dd>
-					<dd>{$user->getUserPostnr()}</dd>
-					<dd>{$user->getUserPostadr()}</dd>
-			</p>
-			<p>
-				<dt><b>Telefon Nr</b></dt>
-					<dd>{$user->getUserTelnr1()}</dd>
-					<dd>{$user->getUserTelnr2()}</dd>
-			</p>
-			<p>
-				<dt><b>E-Post</b></dt>
-				<dd>{$user->getUserEmail()}</dd>
-			</p>
-			<p>
-				<dt><b>Institution</b></dt>
-					<dd>{$user->getUserInst()}</dd>
-			</p>
-		<p><a href="userEdit.php">Redigera</a></p>
-		<p><a href="userChangePassword.php">Ändra Lösenord</a></p>
-	</fieldset>
+	$conDB['title'] = "Hem";
+	$conDB['main'] = <<<EOD
+	<h1>Välkommen {$user->getUser()->first_name} {$user->getUser()->last_name}</h1>
+	<ul class='list'>
+EOD;
+	foreach($res as $val)
+	{
+		$conDB['main'] .= <<<EOD
+		<li class='list'><p><a href='index_route.php?id={$val->id}'>{$val->cname}</a></p></li>
+EOD;
+	}
+	$conDB['main'] .= <<<EOD
+	</ul>
 EOD;
 }
 else
 {
 	$conDB['title'] = "Logga In";
-	$text = <<<EOD
-	<form method=post>
-		<fieldset>
-			<p><label>Akronym:<br/><input type='text' name='acronym' value=''/></label></p>
-			<p><label>Lösenord:<br/><input type='text' name='password' value=''/></label></p>
-			<input type="submit" value="Submit"/>
-		</fieldset>
+	$conDB['main'] = <<<EOD
+	<h1 class='title'>{$conDB['title']}</h1>
+	<hr class='colorgraph'><br/>
+	<form method=post class='signin'>
+		<input type='text' class='acronym' id='input' name='acronym' value='' placeholder='Akronym' />
+		<input type='text' class='password' id='input' name='password' value='' placeholder='Lösenord' />
+		<br/>
+		<input id='input' class='btn_login' type="submit" value="Submit" />
 	</form>
-
 EOD;
 };
-
-$conDB['main'] = <<<EOD
-<h1>{$conDB['title']}</h1>
-	{$text}
-EOD;
 
 include(CONDB_THEME_PATH);

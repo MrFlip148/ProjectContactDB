@@ -1,6 +1,7 @@
 <?php
 include(__DIR__.'/config.php');
-
+if($user->isAuthentic())
+{
 function generatePassword($length = 8)
 {
 	$possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
@@ -20,15 +21,16 @@ $save = isset($_POST['save']) ? true : false;
 
 if($save == true)
 {
-	$user->newUser($conDB['database'], $acro);
-	$user->newUserUpdatePassword($conDB['database'], $pass, $acro);
+	$user->add($acro);
+	$user->addPassword($pass, $acro);
+	header('Location: user_list.php');
 }
 
 $conDB['title'] = 'Ny Användare';
 
 $conDB['main'] = <<<EOD
 
-<a href="javascript:history.go(-1)"> &lt;&lt;&lt; Tillbaka</a>
+<p><a href="javascript:history.go(-1)" class="back"> &lt;&lt;&lt; Tillbaka</a></p>
 
 <form method=post>
 	<fieldset>
@@ -43,4 +45,9 @@ $conDB['main'] = <<<EOD
 
 EOD;
 
+}
+else
+{
+	header('Location:index.php?error=true');
+}
 include(CONDB_THEME_PATH);

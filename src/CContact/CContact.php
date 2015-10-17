@@ -9,53 +9,104 @@ class CContact
 		$this->db = $db;
 	}
 	
-	public function getContacts()
+	public function getAll()
 	{
-		$sql = "SELECT * FROM contact";
-		
-		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql);
+		$sql = 'SELECT c.*, c.id AS cID, co.cname FROM contact AS c, company AS co
+				WHERE c.company = co.id
+				ORDER BY cname,last_name,first_name';
+		$params = array(null);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
 		
 		return($res);
 	}
-
-	public function getContactFromId($id)
+	public function getCompany()
 	{
-		$sql = "SELECT * FROM contact WHERE id = ?";
-		
-		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql, array($id));
-		
-		return($res[0]);
-	}
-	
-	public function getContactNameFromId($id)
-	{
-		$sql = "SELECT name FROM contact WHERE id = ?";
-		
-		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql, array($id));
+		$sql = 'SELECT DISTINCT co.cname AS cname, c.company AS id
+				FROM company AS co, contact AS c
+				WHERE co.id = c.company';
+		$params = array(null);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
 		
 		return($res);
 	}
-	
-	public function getCompanyFromName($name)
+	public function getAllCompanies()
 	{
-		$sql = "SELECT company FROM contact WHERE name = ?";
+		$sql = 'SELECT * FROM company';
+		$params = array(null);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
 		
-		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql, array($name));
+		return($res);
+	}
+	public function getCompanyNameFromId($id)
+	{
+		$sql = 'SELECT cname FROM company WHERE id = ?';
+		$params = array($id);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
 		
 		return($res[0]);
 	}
-	
-	public function add($name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr1,$telnr2,$email)
+	public function getCompanyFromName($cname)
+	{
+		$sql = 'SELECT id FROM company WHERE cname = ?';
+		$params = array($cname);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
+		
+		return($res[0]);
+	}
+	public function getCompanyIdFromContactId($id)
 	{
 		$sql = '
-			INSERT INTO contact (name,company,position,adress1,adress2,postnr,postadr,telnr1,telnr2,email)
-			VALUES (?,?,?,?,?,?,?,?,?,?)';
-		$params = array($name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr1,$telnr2,$email);
-		$res = $this->db->ExecuteQuery($sql, $params);
+			SELECT co.id AS coID FROM company AS co
+			INNER JOIN contact AS c
+			WHERE c.company = co.id AND c.id = 5
+		';
+		$params = array($id);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
+		
+		return($res[0]);
+	}
+	public function getAllFromCompanyId($id)
+	{
+		$sql = 'SELECT * FROM contact WHERE company = ?';
+		$params = array($id);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
 		
 		if($res)
 		{
-			header('Location: contacts.php');
+			return($res);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public function getInfoFromId($id)
+	{
+		$sql = 'SELECT * FROM contact AS c
+				INNER JOIN company AS co
+				WHERE c.company = co.id AND c.id = ?';
+		$params = array($id);
+		$res = $this->db->ExecuteSelectQueryAndFetchAll($sql,$params);
+		
+		if($res)
+		{
+			return($res[0]);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public function add($last_name,$first_name,$company,$pos,$adress1,$adress2,$postnr,$postadr,$telnr,$dirnr,$mobilnr,$email,$add)
+	{
+		$sql = 'INSERT INTO contact (last_name,first_name,company,position,adress1,adress2,postnr,postadr,telnr,telnrDirect,mobilnr,email,acronymAdd) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)';
+		$params = array($last_name,$first_name,$company,$pos,$adress1,$adress2,$postnr,$postadr,$telnr,$dirnr,$mobilnr,$email,$add);
+		$res = $this->db->ExecuteQuery($sql,$params);
+		
+		if($res)
+		{
 			return true;
 		}
 		else
@@ -67,11 +118,11 @@ class CContact
 	public function remove($id)
 	{
 		$sql = 'DELETE FROM contact WHERE id = ?';
-		$res = $this->db->ExecuteQuery($sql, array($id));
+		$params = array($id);
+		$res = $this->db->ExecuteQuery($sql,$params);
 		
 		if($res)
 		{
-			header('Location: contacts.php');
 			return true;
 		}
 		else
@@ -80,35 +131,35 @@ class CContact
 		}
 	}
 	
-	public function edit($name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr1,$telnr2,$email,$id)
+	public function edit($last_name,$first_name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr,$dirNr,$mobilnr,$email,$id)
 	{
 		$sql = '
 			UPDATE contact SET
-				name = ?,
+				last_name = ?,
+				first_name = ?,
 				company = ?,
 				position = ?,
 				adress1 = ?,
 				adress2 = ?,
 				postnr = ?,
 				postadr = ?,
-				telnr1 = ?,
-				telnr2 = ?,
+				telnr = ?,
+				telnrDirect = ?,
+				mobilnr = ?,
 				email = ?
 			WHERE
 				id = ?
 		';
-		$params = array($name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr1,$telnr2,$email,$id);
-		$res = $this->db->ExecuteQuery($sql, $params);
+		$params = array($last_name,$first_name,$company,$position,$adress1,$adress2,$postnr,$postadr,$telnr,$dirNr,$mobilnr,$email,$id);
+		$res = $this->db->ExecuteQuery($sql,$params);
 		
 		if($res)
 		{
-			header('Location: contacts.php');
 			return true;
 		}
 		else
 		{
 			return false;
-		}		
+		}
 	}
-	
 }

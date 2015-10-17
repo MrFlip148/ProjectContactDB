@@ -1,0 +1,17 @@
+ul.list {
+	padding : 5px;
+	border : 1px solid grey;
+}
+li.list {
+	background-color : #fff;
+	border-bottom : 1px solid grey;
+	list-style-type : none;
+	margin-right : 15px;
+	padding-left : 15px;
+}
+li a {
+	text-decoration : none;
+}
+li a:hover {
+	text-decoration : underline;
+}

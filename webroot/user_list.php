@@ -1,13 +1,15 @@
 <?php
 include(__DIR__.'/config.php');
+if($user->isAuthentic())
+{
 
-$results = $user->getAllUsers($conDB['database']);
+$res = $user->getAllUsers();
 
-$conDB['title'] = 'Användar Lista';
+$conDB['title'] = 'Användare';
 
 $conDB['main'] = <<<EOD
-<p><a href="userAdd.php">Ny Användare</a></p>
-<table border=1>
+<p><a href="user_add.php">Ny Användare</a></p>
+<table>
 	<form method=post>
 		<tr>
 			<td>Akronym</td>
@@ -17,17 +19,17 @@ $conDB['main'] = <<<EOD
 		</tr>
 EOD;
 
-foreach($results as $val)
+foreach($res as $val)
 {
 	if($val->acronym != 'admin')
 	{
 		$conDB['main'] .= <<<EOD
 		<tr>
 			<td>{$val->acronym}</td>
-			<td>{$val->name}</td>
+			<td>{$val->last_name}, {$val->first_name}</td>
 			<td>{$val->telnr1}</td>
 			<td>{$val->email}</td>
-			<td><a href="userRemove.php?id={$val->id}"><img src="img/remove.png" style="width:20px" alt="Remove"/></a></td>
+			<td><a href="user_remove.php?id={$val->id}"><img src="img/remove.png" style="width:20px" alt="Remove"/></a></td>
 		</tr>
 EOD;
 	}
@@ -38,4 +40,9 @@ $conDB['main'] .= <<<EOD
 </table>
 EOD;
 
+}
+else
+{
+	header('Location:index.php?error=true');
+}
 include(CONDB_THEME_PATH);

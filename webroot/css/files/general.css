@@ -1,0 +1,49 @@
+body{
+	background-image : url("background/bg.gif");
+	background-repeat : repeat;
+	color : #333;
+	font-family : arial,sans-serif;
+	overflow-y : scroll;
+}
+
+header,footer,nav,article,section,aside,figure,figcaption{
+	display : block;
+}
+
+#wrapper{
+	margin : 0 auto;
+	width : 960px;
+	padding : 10px;
+	background-color : white;
+}
+
+#main{
+	min-height : 30em;
+}
+
+#header{
+	position : relative;
+	margin-bottom : 40px;
+}
+.sitetitle{
+	position : absolute;
+	top : 6px;
+	left : 130px;
+	font-size : 48px;
+}
+.siteslogan{
+	position : absolute;
+	top : 65px;
+	left : 130px;
+	font-style : italic;
+	color : #666;
+}
+
+#footer{
+	margin-top : 40px;
+	border-top : 1px solid #ccc;
+	padding-top : 15px;
+}
+.sitefooter{
+	color : #666;
+}

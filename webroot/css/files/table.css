@@ -1,0 +1,32 @@
+table {
+	border : 1px solid grey;
+}
+th {
+	padding-top : 15px;
+	border-bottom : 2px dotted grey;
+	border-left : 1px solid grey;
+}
+td {
+	border-left : 1px solid grey;
+	border-bottom : 1px solid grey;
+	padding : 5px;
+	font-size : 12px;
+}
+td a{
+	font-size : 14px;
+}
+table#empty {
+	border : 0;
+}
+table#empty td {
+	border : 0;
+}
+table#empty input {
+	padding : 5px;
+}
+table#empty select {
+	padding : 5px;
+}
+table#empty input[type="submit""] {
+
+}

@@ -1,18 +1,18 @@
-<?php 
+<?php
 include(__DIR__.'/config.php');
+if($user->isAuthentic())
+{
 
 $id = $_GET['id'];
 
+$co = $contact->getCompanyIdFromContactId($id);
+
 $delete = isset($_POST['delete']) ? true : false;
-$return = isset($_POST['return']) ? true : false;
 
 if($delete == true)
 {
 	$contact->remove($id);
-}
-if($return == true)
-{
-	header('Location:contacts.php');
+	header('Location:contacts_all.php');
 }
 
 $conDB['title'] = 'Bekräfta Borttagning';
@@ -22,9 +22,14 @@ $conDB['main'] = <<<EOD
 	<fieldset>
 		<legend>{$conDB['title']}</legend>
 		<p>Vill du verkligen ta bort kontakten?</p>
-		<p><input type='submit' name='delete' value='Ja'/> <input type='submit' name='return' value='Nej'/></p>
+		<p><input type='submit' name='delete' value='Ja'/> <input type='submit' name='return' value='Nej' onClick='javascript:history.go(-1)'/></p>
 	</fieldset>
 </form>
 EOD;
 
+}
+else
+{
+	header('Location:index.php?error=true');
+}
 include(CONDB_THEME_PATH);
